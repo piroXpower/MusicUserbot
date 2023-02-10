@@ -2,7 +2,7 @@ import os
 import sys
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from config import HNDLR, SUDO_USERS
+from Deadly import HNDLR, SUDO_USERS
 
 
 @Client.on_message(filters.command(["help"], prefixes=f"{HNDLR}"))

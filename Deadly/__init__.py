@@ -1,5 +1,7 @@
 import os 
 import asyncio
+from pyrogram import Client
+from pytgcalls import PyTgCalls
 
 
 print("[INFO] Deadly Music Userbot Setup Starting... ") 

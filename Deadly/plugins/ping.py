@@ -5,7 +5,7 @@ from datetime import datetime
 from time import time
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from Deadly import HNDLR, SUDO_USERS
+from Deadly import HNDLR
 
 # System Uptime
 START_TIME = datetime.utcnow()

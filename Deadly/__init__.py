@@ -16,7 +16,8 @@ LOGGER = os.getenv("LOGGER", None)
 
 print(" [INFO] Starting Up Your Client...") 
 
-PLAYER = Client(PYRO_STRING, API_ID, API_HASH, plugins=dict(root="Deadly.plugins"))
+PLAYER = Client(name="PYRO_CLIENT", api_id=API_ID, api_hash=API_HASH, session_string=PYRO_STRING) 
+
 Music = PyTgCalls(PLAYER)
 
 print("[INFO] Setup finished Starting Your Userbot.. ") 

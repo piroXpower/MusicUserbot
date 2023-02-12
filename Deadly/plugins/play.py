@@ -1,3 +1,10 @@
+# Copyright © 2023-2024 by piroxpower@Github, < https://github.com/piroxpower >.
+#
+# This file is part of < https://github.com/Team-Deadly/MusicUserbot > project,
+# and is released under the "GNU v3.0 License Agreement".
+# Please see < https://github.com/Team-Deadly/MusicUserbot/blob/main/LICENSE >
+#
+# All rights reserved ®.
 
 import asyncio
 import random
@@ -14,7 +21,7 @@ from pytgcalls.types.input_stream.quality import (
 )
 from youtubesearchpython import VideosSearch
 
-from Deadly import HNDLR, bot, call_py
+from Deadly import HNDLR, PLAYER, Music
 from Deadly.helpers.queues import QUEUE, add_to_queue, get_queue
 
 
@@ -47,7 +54,7 @@ async def play(client, m: Message):
                 await m.reply_to_message.delete()
                 await m.reply_text(f"*➕ {songname} Added To Queue At {pos} On Request of {m.from_user.mention}*")
             else:
-                await call_py.join_group_call(
+                await Music.join_group_call(
                     chat_id,
                     AudioPiped(
                         dl,
@@ -84,7 +91,7 @@ async def play(client, m: Message):
                         await m.reply_text(f"*➕ {songname} Added To Queue At {pos} On Request of {m.from_user.mention}*") 
                     else:
                         try:
-                            await call_py.join_group_call(
+                            await Music.join_group_call(
                                 chat_id,
                                 AudioPiped(
                                     ytlink,

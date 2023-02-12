@@ -1,2 +1,14 @@
+TgCrypto
 pyrogram
+py-tgcalls==0.9.6
+requests
+aiohttp
+aiofiles
+pillow
 asyncio
+wget
+python-arq
+youtube-search-python==1.4.6
+yt-dlp
+python-dotenv
+gTTS

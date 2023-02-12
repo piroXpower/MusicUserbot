@@ -16,7 +16,7 @@ LOGGER = os.getenv("LOGGER", None)
 
 print(" [INFO] Starting Up Your Client...") 
 
-PLAYER = Client(name="PYRO_CLIENT", api_id=API_ID, api_hash=API_HASH, session_string=PYRO_STRING) 
+PLAYER = Client(name="PYRO_CLIENT", api_id=API_ID, api_hash=API_HASH, session_string=PYRO_STRING, plugins=dict(root="Deadly/plugins")) 
 
 Music = PyTgCalls(PLAYER)
 

@@ -1,8 +1,16 @@
+# Copyright © 2023-2024 by piroxpower@Github, < https://github.com/piroxpower >.
+#
+# This file is part of < https://github.com/Team-Deadly/MusicUserbot > project,
+# and is released under the "GNU v3.0 License Agreement".
+# Please see < https://github.com/Team-Deadly/MusicUserbot/blob/main/LICENSE >
+#
+# All rights reserved ®.
+
 import os
 import sys
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from Deadly import HNDLR, SUDO_USERS
+from Deadly import HNDLR
 
 
 @Client.on_message(filters.command(["help"], prefixes=f"{HNDLR}"))

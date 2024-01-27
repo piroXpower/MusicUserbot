@@ -16,7 +16,7 @@
     "heroku-postgresql"
   ],
   "formation": {
-    "web": {
+    "worker": {
       "quantity": 1
     }
   }

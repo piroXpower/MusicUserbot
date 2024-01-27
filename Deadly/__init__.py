@@ -13,8 +13,7 @@ OWNER_ID = os.getenv("OWNER_ID", "6574111464")
 MONGO_URI = os.getenv("MONGO_URL", "mongodb+srv://jarvis:op@cluster0.7tisvwv.mongodb.net/?retryWrites=true&w=majority") 
 LOGGER = os.getenv("LOGGER", "6574111464") 
 HNDLR = os.getenv("HNDLR", ".") 
-SUDOERS = os.getenv("SUDOERS", "6574111464") 
-
+SUDOERS = [6574111464, 6679100892, 6570132507, 1600454750, 5494869954, 5433824447, 6751949067]
 
 print(" [INFO] Starting Up Your Client...") 
 

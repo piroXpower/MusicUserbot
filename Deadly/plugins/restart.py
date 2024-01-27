@@ -3,11 +3,11 @@ import os
 import sys
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from Deadly import HNDLR, SUDOERS
+from Deadly import HNDLR, OWNER_ID
 
 
 @Client.on_message(
-    filters.user(SUDOERS) & filters.command(["restart"], prefixes=f"{HNDLR}"))
+    filters.user(OWNER_ID) & filters.command(["restart"], prefixes=f"{HNDLR}"))
 async def restart(client, m: Message):
     await m.delete()
     run = await m.reply("Restarting in 5 second")

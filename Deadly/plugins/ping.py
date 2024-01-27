@@ -32,7 +32,7 @@ async def _human_time_duration(seconds):
 async def ping(client, m: Message):
    start = time()
    current_time = datetime.utcnow()
-   m_reply = await m.edit("Pinging ngewe...")
+   m_reply = await m.reply("Pinging ngewe...")
    delta_ping = time() - start
    await m_reply.edit("0% ▒▒▒▒▒▒▒▒▒▒")
    await m_reply.edit("20% ██▒▒▒▒▒▒▒▒")

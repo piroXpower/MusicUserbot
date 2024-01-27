@@ -13,6 +13,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 from pytgcalls import StreamType
 from pytgcalls.types.input_stream import AudioPiped, AudioVideoPiped
+from pytgcalls.types import AudioParameters, VideoParameters, AudioQuality, VideoQuality
 from pytgcalls.types.input_stream.quality import (
     HighQualityAudio,
     HighQualityVideo,
@@ -58,8 +59,8 @@ async def play(client, m: Message):
                     chat_id,
                     AudioPiped(
                         dl,
-                    ),
-                    stream_type=StreamType().pulse_stream,
+                        AudioParameters.from_quality(AudioQuality.STUDIO), 
+                    ),          
                 )
                 add_to_queue(chat_id, songname, dl, link, "Audio", 0)
                 await huehue.delete()
@@ -95,8 +96,8 @@ async def play(client, m: Message):
                                 chat_id,
                                 AudioPiped(
                                     ytlink,
+                                    AudioParameters.from_quality(AudioQuality.STUDIO),
                                 ),
-                                stream_type=StreamType().pulse_stream,
                             )
                             add_to_queue(chat_id, songname, ytlink, url, "Audio", 0)
                             await huehue.delete()

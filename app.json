@@ -1,0 +1,23 @@
+{
+  "name": "Your App Name",
+  "description": "Description of your app",
+  "repository": "https://github.com/your-username/your-repository",
+  "logo": "https://your-logo-url.png",
+  "keywords": ["heroku", "python"],
+  "env": {
+    "YOUR_ENV_VARIABLE": {
+      "description": "Description of your environment variable"
+    }
+  },
+  "scripts": {
+    "postdeploy": "python manage.py migrate"
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  }
+}

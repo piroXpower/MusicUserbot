@@ -1,7 +1,7 @@
 import asyncio
 from pytgcalls import idle
 from Deadly import PLAYER, Music
-From helpers.join import join
+from Deadly.helpers.join import join
 
 
 async def main():

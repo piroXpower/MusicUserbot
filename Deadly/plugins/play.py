@@ -52,7 +52,6 @@ async def play(client, m: Message):
             if chat_id in QUEUE:
                 pos = add_to_queue(chat_id, songname, dl, link, "Audio", 0)
                 await huehue.delete()
-                await m.reply_to_message.delete()
                 await m.reply_text(f"*➕ {songname} Added To Queue At {pos} On Request of {m.from_user.mention}*")
             else:
                 await Music.join_group_call(
@@ -64,7 +63,6 @@ async def play(client, m: Message):
                 )
                 add_to_queue(chat_id, songname, dl, link, "Audio", 0)
                 await huehue.delete()
-                await m.reply_to_message.delete()
                 await m.reply_text(f"▶ Now Playing {songname} On Request Of {m.from_user.mention}")
 
     else:
@@ -87,8 +85,7 @@ async def play(client, m: Message):
                 else:
                     if chat_id in QUEUE:
                         pos = add_to_queue(chat_id, songname, ytlink, url, "Audio", 0)
-                        await huehue.delete()
-                        await m.reply_to_message.delete()
+                        await huehue.delete()                        
                         await m.reply_text(f"*➕ {songname} Added To Queue At {pos} On Request of {m.from_user.mention}*") 
                     else:
                         try:
@@ -101,8 +98,7 @@ async def play(client, m: Message):
                             )
                             add_to_queue(chat_id, songname, ytlink, url, "Audio", 0)
                             await huehue.delete()
-                            await m.reply_to_message.delete()
-                            await m.reply_text(f"▶ Now Playing {songname} On Request Of {m.from_user.mention} ✨")
+                            await m.reply_text(f"▶ Now Playing {songname}\n ♀️ Requester: {m.from_user.mention} ✨")
                         except Exception as ep:
                             await huehue.edit(f"`{ep}`")
 

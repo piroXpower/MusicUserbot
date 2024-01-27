@@ -1,3 +1,4 @@
+ffmpeg
 ffprobe
 ffmpeg-python
 TgCrypto

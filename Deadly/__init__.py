@@ -12,6 +12,8 @@ PYRO_STRING = os.getenv("STRING_SESSION", None)
 OWNER_ID = os.getenv("OWNER_ID", None) 
 MONGO_URI = os.getenv("MONGO_URL", None) 
 LOGGER = os.getenv("LOGGER", None) 
+HNDLR = os.getenv("HNDLR", ".") 
+SUDOERS = os.getenv("SUDOERS", "") 
 
 
 print(" [INFO] Starting Up Your Client...") 

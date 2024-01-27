@@ -1,11 +1,10 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from Deadly import HNDLR, Music
+from Deadly import HNDLR, Music, SUDOERS
 from Deadly.helpers.decorators import authorized_users_only
 from Deadly.helpers.queues import QUEUE
 
-@Client.on_message(filters.command(["pause"], prefixes=f"{HNDLR}"))
-@authorized_users_only
+@Client.on_message(filters.user(SUDOERS) & filters.command(["pause"], prefixes=f"{HNDLR}"))
 async def pause(client, m: Message):
     await m.delete()
     chat_id = m.chat.id

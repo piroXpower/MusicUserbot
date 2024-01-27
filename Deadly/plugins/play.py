@@ -23,7 +23,7 @@ from youtubesearchpython import VideosSearch
 
 from Deadly import HNDLR, PLAYER, Music
 from Deadly.helpers.queues import QUEUE, add_to_queue, get_queue
-From Deadly.helpers.Youtube import *
+from Deadly.helpers.youtube import *
 
 
 

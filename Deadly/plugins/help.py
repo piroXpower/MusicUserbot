@@ -22,12 +22,11 @@ async def help(client, m: Message):
 
 ⚡ COMMAND FOR EVERYONE
 • {HNDLR}play [song title | youtube links | reply audio file] - to play the song
-• {HNDLR}vplay [video title | youtube links | reply video file] - to play video (not for heroku)
 • {HNDLR}playlist to view playlists
 • {HNDLR}ping - to check status
 • {HNDLR}help - to see a list of commands
 • {HNDLR}join- to join | to the group
-⚡ COMMAND TO ALL ADMIN
+⚡ COMMAND FOR ALLOWED ADMINS
 • {HNDLR}resume - to continue playing a song or video
 • {HNDLR}pause - to pause playing a song or video
 • {HNDLR}skip - to skip a song or video

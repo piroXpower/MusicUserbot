@@ -1,28 +1,31 @@
 {
-  "name": "Your App Name",
-  "description": "Description of your app",
-  "repository": "https://github.com/your-username/your-repository",
-  "logo": "https://your-logo-url.png",
-  "keywords": ["heroku", "python"],
-  "env": {
-    "STRING": {
-      "description": "Description of your environment variable"
-    }
-  },
-  "buildpacks": [
-       {
-          "url": "heroku/python"
-       },
-       {
-          "url": "heroku/nodejs"
-       },
-       {
-          "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
-       }
-  ],
-  "formation": {
-    "worker": {
-      "quantity": 1
-    }
-  }
+    "name": "ᴍᴜsɪᴄ",
+    "description": "A Telegram Music Player Bot, written in Python with Pyrogram and Py-Tgcalls.",
+    "logo": "",
+    "keywords": [
+    "python3",
+    "telegram",
+    "bot",
+    "telegram-bot",
+    "pyrogram"
+    ],
+    "env": {
+      "STRING_SESSION": {
+        "description": "A Pyrogram v2 String Session from @StringFatherBot on Telegram.",
+        "value": "",
+        "required": true
+      }
+    },
+    "buildpacks": [
+          {
+              "url": "heroku/python"
+          },
+          {
+              "url": "heroku/nodejs"
+          },
+          {
+              "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
+          }
+      ],
+      "stack": "container"
 }

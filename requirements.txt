@@ -1,3 +1,4 @@
+ffprobe
 ffmpeg-python
 TgCrypto
 pyrogram

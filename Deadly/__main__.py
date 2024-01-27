@@ -22,7 +22,7 @@ async def main():
     print("[DONE] Your MusicBot Started Successfully ") 
     await idle()
     print("[INFO] Userbot Stopped! Good Bye..")
-    await bot.stop()
+    await PLAYER.stop()
 
 
 loop = asyncio.get_event_loop()

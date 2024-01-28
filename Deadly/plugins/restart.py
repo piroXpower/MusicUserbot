@@ -8,8 +8,7 @@ from Deadly import HNDLR, OWNER_ID
 
 @Client.on_message(
     filters.user(OWNER_ID) & filters.command(["restart"], prefixes=f"{HNDLR}"))
-async def restart(client, m: Message):
-    await m.delete()
+async def restart(client, m: Message):    
     run = await m.reply("Restarting in 5 second")
     await run.edit("Restarting in 4 second")
     await run.edit("Restarting in 3 second")

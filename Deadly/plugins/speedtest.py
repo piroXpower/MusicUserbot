@@ -49,4 +49,4 @@ async def speedtest_function(client, message):
 **__Upload Speed:__** {result['upload'] / 1024 / 1024:.2f} Mbps
 """
     k = m.edit(output) 
-    await m.delete()
+    

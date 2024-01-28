@@ -25,7 +25,7 @@ def testspeed(m):
 # 		Send Speed of Internet
 
 
-@Client.on_message((filters.command("/speedcheck") & filters.user(OWNER_ID))
+@Client.on_message(filters.command("/speedcheck") & filters.user(OWNER_ID))
 async def speedtest_function(client, message):
     m = await message.reply_text("Running Speed test")
     loop = asyncio.get_event_loop()

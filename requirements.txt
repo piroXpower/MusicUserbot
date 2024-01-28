@@ -1,3 +1,4 @@
+speedtest-cli
 ffmpeg
 ffprobe
 ffmpeg-python

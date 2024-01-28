@@ -48,8 +48,5 @@ async def speedtest_function(client, message):
 **__Download Speed:__** {result['download'] / 1024 / 1024:.2f} Mbps
 **__Upload Speed:__** {result['upload'] / 1024 / 1024:.2f} Mbps
 """
-    msg = await app.send_message(
-        chat_id=message.chat.id,
-        output
-    )
+    msg = await app.send_message(chat_id=message.chat.id, message=output)
     await m.delete()

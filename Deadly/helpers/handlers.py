@@ -69,7 +69,7 @@ async def on_end_handler(_, update: Update):
         if op == 0:
             return
         else:
-            await bot.send_message(
+            await PLAYER.send_message(
                 chat_id,
                 f"**🗃️ Now Playing;** \n[{op[0]}]({op[1]}) | `{op[2]}`",
                 disable_web_page_preview=True,

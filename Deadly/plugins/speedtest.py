@@ -3,7 +3,7 @@ from pyrogram import filters, Client
 import speedtest
 import asyncio
 
-
+HNDLR = "+"
 
 
 
@@ -25,7 +25,7 @@ def testspeed(m):
 # 		Send Speed of Internet
 
 
-@Client.on_message(filters.command("/speedcheck") & filters.user(OWNER_ID))
+@Client.on_message(filters.command(["speedcheck"], prefixes=f"{HNDLR}") | filters.user(OWNER_ID))
 async def speedtest_function(client, message):
     m = await message.reply_text("Running Speed test")
     loop = asyncio.get_event_loop()
@@ -48,9 +48,8 @@ async def speedtest_function(client, message):
 **__Download Speed:__** {result['download'] / 1024 / 1024:.2f} Mbps
 **__Upload Speed:__** {result['upload'] / 1024 / 1024:.2f} Mbps
 """
-    msg = await app.send_photo(
+    msg = await app.send_message(
         chat_id=message.chat.id,
-        photo=result["share"],
-        caption=output
+        output
     )
     await m.delete()

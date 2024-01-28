@@ -14,12 +14,15 @@ async def repo(client, m: Message):
 <b>👋 Hello {m.from_user.mention}!
 🗃️ Music Player UserBot 
 🔰 Telegram UserBot To Play Songs In Telegram Voice Chat .
+
 👩‍💻 Presented By  
 • [𝗕𝗹𝗮𝘇𝗲](https://t.me/beingblazeop)
+
 📝 Condition
 • Python 3.8+
 • FFMPEG
 • Nodejs v18+
+
 📝 Required Variables 
 • `API_ID` - Get From [my.telegram.org](https://my.telegram.org)
 • `API_HASH` - Get From [my.telegram.org](https://my.telegram.org)

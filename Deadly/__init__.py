@@ -19,8 +19,6 @@ SUDOERS = [6574111464, 6679100892, 6570132507, 1600454750, 5494869954, 543382444
 print(" [INFO] Starting Up Your Client...") 
 
 PLAYER = Client(name="PYRO_CLIENT", api_id=API_ID, api_hash=API_HASH, session_string=PYRO_STRING, plugins=dict(root="Deadly/plugins")) 
-PM_GUARD = Client(name="PYRO_CLIENT", api_id=API_ID, api_hash=API_HASH, session_string=STRING2, plugins=dict(root="Deadly/guard")) 
-
 Music = PyTgCalls(PLAYER)
 
 print("[INFO] Setup finished Starting Your Userbot.. ") 

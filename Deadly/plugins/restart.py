@@ -6,7 +6,7 @@ from pyrogram.types import Message
 from Deadly import HNDLR, OWNER_ID
 
 
-@Client.on_message(ilters.user(OWNER_ID) & filters.command(["restart"], prefixes=f"{HNDLR}"))
+@Client.on_message(filters.user(OWNER_ID) & filters.command(["restart"], prefixes=f"{HNDLR}"))
 async def restart(client, m: Message):    
     run = await m.reply("Restarting in 5 second")
     await run.edit("Restarting in 4 second")

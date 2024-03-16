@@ -52,7 +52,7 @@ async def play(client, m: Message):
             if chat_id in QUEUE:
                 pos = add_to_queue(chat_id, songname, dl, link, "Audio", 0)
                 await huehue.delete()
-                await m.reply_text(f"*➕ {songname} Added To Queue At {pos} On Request of {m.from_user.mention}*")
+                await m.reply_text(f"*➕ {songname}\n**ᴀᴅᴅᴇᴅ ᴛᴏ ᴘʟᴀʏʟɪsᴛ ᴀᴛ** {pos}\n♀️**ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ**: {m.from_user.mention}*")
             else:
                 await Music.join_group_call(
                     chat_id,
@@ -63,7 +63,7 @@ async def play(client, m: Message):
                 )
                 add_to_queue(chat_id, songname, dl, link, "Audio", 0)
                 await huehue.delete()
-                await m.reply_text(f"▶ Now Playing {songname} On Request Of {m.from_user.mention}")
+                await m.reply_text(f"▶ **ɴᴏᴡ ᴘʟᴀʏɪɴɢ**  {songname}\n⚡️ **ʀᴇᴏ̨ᴜᴇsᴛᴇᴅ ʙʏ** {m.from_user.mention}")
 
     else:
         if len(m.command) < 2:
@@ -86,7 +86,7 @@ async def play(client, m: Message):
                     if chat_id in QUEUE:
                         pos = add_to_queue(chat_id, songname, ytlink, url, "Audio", 0)
                         await huehue.delete()                        
-                        await m.reply_text(f"*➕ {songname} Added To Queue At {pos} On Request of {m.from_user.mention}*") 
+                        await m.reply_text(f"*➕ {songname}\n**ᴀᴅᴅᴇᴅ ᴛᴏ ᴘʟᴀʏʟɪsᴛ ᴀᴛ** {pos}\n♀️**ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ**: {m.from_user.mention}*") 
                     else:
                         try:
                             await Music.join_group_call(
@@ -98,7 +98,7 @@ async def play(client, m: Message):
                             )
                             add_to_queue(chat_id, songname, ytlink, url, "Audio", 0)
                             await huehue.delete()
-                            await m.reply_text(f"▶ Now Playing {songname}\n ♀️ Requester: {m.from_user.mention} ✨")
+                            await m.reply_text(f"▶ **ɴᴏᴡ ᴘʟᴀʏɪɴɢ**  {songname}\n⚡️ **ʀᴇᴏ̨ᴜᴇsᴛᴇᴅ ʙʏ** {m.from_user.mention}")
                         except Exception as ep:
                             await huehue.edit(f"`{ep}`")
 
@@ -115,7 +115,7 @@ async def playlist(client, m: Message):
                 disable_web_page_preview=True,
             )
         else:
-            QUE = f"**✧ NOW PLAYING:** \n[{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}` \n\n**â¯ QUEUE LIST:**"
+            QUE = f"**✧ ɴᴏᴡ ᴘʟᴀʏɪɴɢ:** \n[{chat_queue[0][0]}]({chat_queue[0][2]}) | `{chat_queue[0][3]}` \n\n**â¯ ǫᴜᴇᴜᴇ ʟɪsᴛ:**"
             l = len(chat_queue)
             for x in range(1, l):
                 hmm = chat_queue[x][0]

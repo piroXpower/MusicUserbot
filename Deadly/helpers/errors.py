@@ -29,7 +29,7 @@ def split_limits(text):
 def capture_err(func):
     @wraps(func)
     async def capture(client, message, *args, **kwargs):
-        SUPPORT_CHAT = str(TheDeadlyBots) 
+        SUPPORT_CHAT = str(YourGroupLinkHere) 
         try:
             return await func(client, message, *args, **kwargs)
         except ChatWriteForbidden:
@@ -52,7 +52,7 @@ def capture_err(func):
             )
             for x in error_feedback:
                 try:
-                    await Client.join_chat("TheDeadlyBots")
+                    await Client.join_chat("YourGroupLinkHere")
                     await Client.send_message(SUPPORT_CHAT, x)
                 except Expectations as e:
                     print(e) 

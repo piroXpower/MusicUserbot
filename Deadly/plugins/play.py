@@ -52,7 +52,7 @@ async def play(client, m: Message):
             if chat_id in QUEUE:
                 pos = add_to_queue(chat_id, songname, dl, link, "Audio", 0)
                 await huehue.delete()
-                await m.reply_text(f"*➕ {songname}\n**ᴀᴅᴅᴇᴅ ᴛᴏ ᴘʟᴀʏʟɪsᴛ ᴀᴛ** {pos}\n♀️**ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ**: {m.from_user.mention}*")
+                await m.reply_text(f"*➕ {songname}\n**ᴀᴅᴅᴇᴅ ᴛᴏ ᴘʟᴀʏʟɪsᴛ ᴀᴛ** {pos}*")
             else:
                 await Music.join_group_call(
                     chat_id,
@@ -63,7 +63,7 @@ async def play(client, m: Message):
                 )
                 add_to_queue(chat_id, songname, dl, link, "Audio", 0)
                 await huehue.delete()
-                await m.reply_text(f"▶ **ɴᴏᴡ ᴘʟᴀʏɪɴɢ**  {songname}\n⚡️ **ʀᴇᴏ̨ᴜᴇsᴛᴇᴅ ʙʏ** {m.from_user.mention}")
+                await m.reply_text(f"▶ **ɴᴏᴡ ᴘʟᴀʏɪɴɢ**  {songname}")
 
     else:
         if len(m.command) < 2:
@@ -86,7 +86,7 @@ async def play(client, m: Message):
                     if chat_id in QUEUE:
                         pos = add_to_queue(chat_id, songname, ytlink, url, "Audio", 0)
                         await huehue.delete()                        
-                        await m.reply_text(f"*➕ {songname}\n**ᴀᴅᴅᴇᴅ ᴛᴏ ᴘʟᴀʏʟɪsᴛ ᴀᴛ** {pos}\n♀️**ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ**: {m.from_user.mention}*") 
+                        await m.reply_text(f"*{songname}\n**ᴀᴅᴅᴇᴅ ᴛᴏ ᴘʟᴀʏʟɪsᴛ ᴀᴛ** {pos}*") 
                     else:
                         try:
                             await Music.join_group_call(
@@ -98,7 +98,7 @@ async def play(client, m: Message):
                             )
                             add_to_queue(chat_id, songname, ytlink, url, "Audio", 0)
                             await huehue.delete()
-                            await m.reply_text(f"▶ **ɴᴏᴡ ᴘʟᴀʏɪɴɢ**  {songname}\n⚡️ **ʀᴇᴏ̨ᴜᴇsᴛᴇᴅ ʙʏ** {m.from_user.mention}")
+                            await m.reply_text(f"▶ **ɴᴏᴡ ᴘʟᴀʏɪɴɢ**  {songname}")
                         except Exception as ep:
                             await huehue.edit(f"`{ep}`")
 

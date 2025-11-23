@@ -4,7 +4,7 @@ ffprobe
 ffmpeg-python
 TgCrypto
 pyrogram
-py-tgcalls==1.1.6
+
 requests
 aiohttp
 aiofiles

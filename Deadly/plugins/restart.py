@@ -13,6 +13,6 @@ async def restart(client, m: Message):
     await run.edit("Restarting in 3 second")
     await run.edit("Restarting in 2 second")
     await run.edit("Restarting in 1 second")
-    await run.edit("**✅ Music Userbot Restarted**")
+    await run.edit("**Restarted...**")
     os.execl(sys.executable, sys.executable, *sys.argv)
     quit()

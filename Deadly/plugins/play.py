@@ -22,7 +22,7 @@ from pytgcalls.types.input_stream.quality import (
 )
 from youtubesearchpython import VideosSearch
 
-from Deadly import HNDLR, PLAYER, Music
+from Deadly import HNDLR, PLAYER, Music, SUDOERS
 from Deadly.helpers.queues import QUEUE, add_to_queue, get_queue
 from Deadly.helpers.youtube import *
 

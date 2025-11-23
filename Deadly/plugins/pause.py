@@ -12,9 +12,9 @@ async def pause(client, m: Message):
         try:
             await Music.pause_stream(chat_id)
             await m.reply(
-                f"**⏸ Playback is paused .**\n\n• To resume playback, use the command  » {HNDLR}resume"
+                f"**Music paused...**"
             )
         except Exception as e:
             await m.reply(f"**ERROR** \n`{e}`")
     else:
-        await m.reply("** ❌ Nothing is playing to pause!**")
+        await m.reply("**No Playlist in queue!**")

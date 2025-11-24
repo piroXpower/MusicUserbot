@@ -7,7 +7,7 @@ from pytgcalls import PyTgCalls
 print("[INFO] Deadly Music Userbot Setup Starting... ") 
 
 API_ID = int(os.getenv("API_ID", "21364355")) 
-API_HASH = os.getenv("API_HASH", " 72f11aec1dd3e5764554d477341a3d0b") 
+API_HASH = os.getenv("API_HASH", "72f11aec1dd3e5764554d477341a3d0b") 
 PYRO_STRING = os.getenv("STRING_SESSION", "") 
 STRING2 = os.getenv("STR2", "") 
 OWNER_ID = os.getenv("OWNER_ID", "7930301153") 

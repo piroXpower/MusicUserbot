@@ -2,7 +2,7 @@ speedtest-cli
 ffmpeg
 ffprobe
 ffmpeg-python
-TgCrypto
+
 pyrogram
 
 requests

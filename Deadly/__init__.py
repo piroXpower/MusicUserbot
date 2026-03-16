@@ -10,11 +10,11 @@ API_ID = int(os.getenv("API_ID", "21364355"))
 API_HASH = os.getenv("API_HASH", "72f11aec1dd3e5764554d477341a3d0b") 
 PYRO_STRING = os.getenv("STRING_SESSION", "") 
 STRING2 = os.getenv("STR2", "") 
-OWNER_ID = os.getenv("OWNER_ID", "7930301153") 
+OWNER_ID = os.getenv("OWNER_ID", "8407294026") 
 MONGO_URI = os.getenv("MONGO_URL", "mongodb+srv://jarvis:op@cluster0.7tisvwv.mongodb.net/?retryWrites=true&w=majority") 
-LOGGER = os.getenv("LOGGER", "7930301153") 
+LOGGER = os.getenv("LOGGER", "8407294026") 
 HNDLR = os.getenv("HNDLR", "!") 
-SUDOERS = [7930301153]
+SUDOERS = [8407294026]
 
 print(" [INFO] Starting Up Your Client...") 
 

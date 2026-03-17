@@ -2,9 +2,9 @@ speedtest-cli
 ffmpeg
 ffprobe
 ffmpeg-python
-
-pyrogram
-
+py-tgcalls==1.1.6
+ntgcalls==1.0.4
+pyrogram==2.0.106
 requests
 aiohttp
 aiofiles

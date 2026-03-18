@@ -7,70 +7,48 @@
 # All rights reserved ®.
 
 from pyrogram.raw.base import Update
-from pytgcalls.types.input_stream import AudioPiped, AudioVideoPiped
-from pytgcalls.types.input_stream.quality import (
-    HighQualityAudio,
-    HighQualityVideo,
-    LowQualityVideo,
-    MediumQualityVideo,
-)
+from pytgcalls.types.input_stream import AudioPiped
+from pytgcalls.types.input_stream.quality import HighQualityAudio
 from pytgcalls.types.stream import StreamAudioEnded, StreamVideoEnded
 
 from ..import PLAYER, Music
 from .queues import QUEUE, clear_queue, get_queue, pop_an_item
-
+from .youtube import ytdl
+from .thumbnail import generate_aura_thumb # New Import
 
 async def skip_current_song(chat_id):
     if chat_id in QUEUE:
         chat_queue = get_queue(chat_id)
         if len(chat_queue) == 1:
-            await Music.leave_group_call(chat_id)
+            try: await Music.leave_group_call(chat_id)
+            except: pass
             clear_queue(chat_id)
             return 1
         else:
-            songname = chat_queue[1][0]
-            url = chat_queue[1][1]
-            link = chat_queue[1][2]
-            type = chat_queue[1][3]
-            Q = chat_queue[1][4]
-            await Music.change_stream(
-                    chat_id,
-                    AudioPiped(
-                        url,
-                    ),
-                )
             pop_an_item(chat_id)
-            return [songname, link, type]
-    else:
-        return 0
+            new_q = get_queue(chat_id)
+            songname, link_id, ref_link, type, duration, thumb_url, req_by = new_q[0]
 
-
-async def skip_item(chat_id, h):
-    if chat_id in QUEUE:
-        chat_queue = get_queue(chat_id)
-        try:
-            x = int(h)
-            songname = chat_queue[x][0]
-            chat_queue.pop(x)
-            return songname
-        except Exception as e:
-            print(e)
-            return 0
-    else:
-        return 0
-
+            # Refresh Link
+            hm, play_url = await ytdl(link_id) if not str(link_id).startswith("http") else (1, link_id)
+            
+            await Music.change_stream(chat_id, AudioPiped(play_url, HighQualityAudio()))
+            
+            # Generate Thumbnail for the skip
+            final_thumb = await generate_aura_thumb(songname, duration, req_by, thumb_url)
+            return [songname, ref_link, type, final_thumb]
+    return 0
 
 @Music.on_stream_end()
 async def on_end_handler(_, update: Update):
-    if isinstance(update, StreamAudioEnded) or isinstance(update, StreamVideoEnded):
+    if isinstance(update, (StreamAudioEnded, StreamVideoEnded)):
         chat_id = update.chat_id
-        print(chat_id)
         op = await skip_current_song(chat_id)
-        if op == 0:
-            return
-        else:
-            await PLAYER.send_message(
-                chat_id,
-                f"**🗃️ ɴᴏᴡ ᴘʟᴀʏɪɴɢ;** \n[{op[0]}]({op[1]}) | `{op[2]}`",
-                disable_web_page_preview=True,
-            )
+        if op in [0, 1]: return
+        
+        await PLAYER.send_photo(
+            chat_id,
+            photo=op[3],
+            caption=f"⏭️ **sᴋɪᴘᴘᴇᴅ! ɴᴏᴡ ᴘʟᴀʏɪɴɢ:**\n└ 🎧 **ᴛɪᴛʟᴇ:** [{op[0]}]({op[1]})"
+        )
+        

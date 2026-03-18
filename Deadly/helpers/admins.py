@@ -1,47 +1,41 @@
 # Copyright © 2023-2024 by piroxpower@Github
-# Modified for 2026 High-Speed Performance & Caching
+# Optimized for 2026 Performance & Permission Handling
 
-from typing import Callable
-from pyrogram import Client
-from pyrogram.types import Message
-from Deadly import SUDOERS
-from Deadly.helpers.admins import get_administrators
+from typing import List
+from pyrogram.types import Chat
+from pyrogram.enums import ChatMembersFilter
 
-# Simple dictionary to cache admins for 5 minutes to prevent API lag
-ADMIN_CACHE = {}
+# Assuming these are your custom caching helpers
+from Deadly.helpers.get_admins import get as get_cache
+from Deadly.helpers.get_admins import set as set_cache
 
-def authorized_users_only(func: Callable) -> Callable:
-    async def decorator(client: Client, message: Message):
-        # 1. Bypass check for SUDOERS (Fastest path)
-        if message.from_user and message.from_user.id in SUDOERS:
-            return await func(client, message)
+async def get_administrators(chat: Chat) -> List[int]:
+    """
+    Fetches and caches the list of authorized administrators for a chat.
+    Authorized = Users with 'Manage Video Chats' permissions.
+    """
+    # 1. Try to fetch from local cache first
+    cached_admins = get_cache(chat.id)
+    if cached_admins:
+        return cached_admins
 
-        chat_id = message.chat.id
-        user_id = message.from_user.id if message.from_user else None
+    # 2. If not cached, fetch from Telegram API
+    administrators = []
+    try:
+        # Use the updated filter for 2026 Pyrogram/Telegram API
+        async for admin in chat.get_members(filter=ChatMembersFilter.ADMINISTRATORS):
+            # Check for specific music/video control permissions
+            # In 2026, 'can_manage_video_chats' is the standard for Music Bots
+            if admin.privileges and admin.privileges.can_manage_video_chats:
+                if admin.user: # Ensure it's a real user and not a service
+                    administrators.append(admin.user.id)
         
-        if not user_id:
-            return # Ignore anonymous or deleted accounts
+        # 3. Save to cache to prevent redundant API calls
+        set_cache(chat.id, administrators)
+        return administrators
 
-        # 2. Check Cache first to save API calls
-        if chat_id in ADMIN_CACHE and user_id in ADMIN_CACHE[chat_id]:
-            return await func(client, message)
-
-        # 3. If not in cache, fetch from Telegram
-        try:
-            administrators = await get_administrators(chat_id)
-            
-            # Update cache for this chat
-            ADMIN_CACHE[chat_id] = administrators
-            
-            if user_id in administrators:
-                return await func(client, message)
-            else:
-                return await message.reply_text(
-                    "**❌ Admin Only:** You need to be an administrator to use this command."
-                )
-        except Exception as e:
-            print(f"Auth Error: {e}")
-            # Fallback: if API fails, allow if they are in SUDOERS (already checked)
-            return
-
-    return decorator
+    except Exception as e:
+        print(f"Admin Fetch Error in {chat.id}: {e}")
+        # Return empty list on failure to prevent bot crashing
+        return []
+        

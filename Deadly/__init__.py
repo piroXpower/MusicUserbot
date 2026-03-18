@@ -1,25 +1,72 @@
-import os 
+# Copyright © 2023-2024 by piroxpower@Github
+# Optimized for 2026: Async Lifecycle & High-Performance Audio
+
+import os
 import asyncio
+import sys
 from pyrogram import Client
 from pytgcalls import PyTgCalls
+from pyrogram.errors import FloodWait
 
-
-print("[INFO] Deadly Music Userbot Setup Starting... ") 
+# --- 1. CONFIGURATION ---
+print("[INFO] Deadly Music Userbot: Initializing Config...")
 
 API_ID = int(os.getenv("API_ID", "21364355")) 
 API_HASH = os.getenv("API_HASH", "72f11aec1dd3e5764554d477341a3d0b") 
 PYRO_STRING = os.getenv("STRING_SESSION", "") 
 
-#dumb data
-STRING2 = os.getenv("STR2", "") 
-OWNER_ID = os.getenv("OWNER_ID", "8407294026") 
-LOGGER = os.getenv("LOGGER", "8407294026") 
+# Support for Multi-Account if needed later
+OWNER_ID = int(os.getenv("OWNER_ID", "8407294026")) 
+LOGGER = int(os.getenv("LOGGER", "8407294026")) 
 HNDLR = os.getenv("HNDLR", "!") 
-SUDOERS = [8407294026]
 
-print(" [INFO] Starting Up Your Client...") 
+# Sudoers list (Add your ID here)
+SUDOERS = [8407294026, 7301581155, 6741274706, 6750212064]
 
-PLAYER = Client(name="PYRO_CLIENT", api_id=API_ID, api_hash=API_HASH, session_string=PYRO_STRING, plugins=dict(root="Deadly/plugins")) 
+# --- 2. CLIENT INITIALIZATION ---
+print("[INFO] Starting Pyrogram Client...")
+
+# We use 'plugins' to automatically load play.py, skip.py, etc.
+PLAYER = Client(
+    name="DeadlyMusic",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    session_string=PYRO_STRING,
+    plugins=dict(root="Deadly/plugins")
+)
+
+# Initialize PyTgCalls with the Player
 Music = PyTgCalls(PLAYER)
 
-print("[INFO] Setup finished Starting Your Userbot.. ") 
+# --- 3. STARTUP LOGIC ---
+async def start_bot():
+    print("[INFO] Booting Engines...")
+    try:
+        await PLAYER.start()
+        await Music.start()
+        
+        # Send a startup message to your Logger group
+        try:
+            await PLAYER.send_message(LOGGER, "**✅ Deadly Music Userbot is Live!**\n\nAudit Engine: `Online`\nThumbnail Engine: `Cyber-Aura v2`")
+        except:
+            pass
+            
+        print("[INFO] Bot is now 100% Online. Press Ctrl+C to Stop.")
+        # Keep the bot running forever
+        await asyncio.Event().wait()
+        
+    except FloodWait as e:
+        print(f"[ERROR] FloodWait: Sleeping for {e.value} seconds...")
+        await asyncio.sleep(e.value)
+    except Exception as e:
+        print(f"[CRITICAL] Startup Failed: {e}")
+    finally:
+        await PLAYER.stop()
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(start_bot())
+    except KeyboardInterrupt:
+        print("\n[INFO] Shutting down safely...")
+

@@ -1,16 +1,21 @@
+# Copyright © 2023-2024 by piroxpower@Github
+# Enhanced Error Logging for 2026 Audit Engine
 
 import sys
 import traceback
 from functools import wraps
-
 from pyrogram import Client
-from pyrogram.errors.exceptions.forbidden_403 import ChatWriteForbidden
+from Deadly import OWNER_ID as SUPPORT_CHAT
+from pyrogram.errors import ChatWriteForbidden, FloodWait
+import asyncio
+
+# Replace this with your actual log group ID or Username
 
 
 def split_limits(text):
+    """Splits long error logs to fit Telegram's 4096 character limit."""
     if len(text) < 2048:
         return [text]
-
     lines = text.splitlines(True)
     small_msg = ""
     result = []
@@ -20,42 +25,54 @@ def split_limits(text):
         else:
             result.append(small_msg)
             small_msg = line
-    else:
+    if small_msg:
         result.append(small_msg)
-
     return result
-
 
 def capture_err(func):
     @wraps(func)
     async def capture(client, message, *args, **kwargs):
-        SUPPORT_CHAT = str(YourGroupLinkHere) 
         try:
             return await func(client, message, *args, **kwargs)
         except ChatWriteForbidden:
-            await Client.leave_chat(message.chat.id)
+            # If the bot is muted/banned from writing, leave to save resources
+            try:
+                await client.leave_chat(message.chat.id)
+            except:
+                pass
             return
-        except Exception as err:
+        except Exception:
+            # Get full traceback details
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            errors = traceback.format_exception(
-                etype=exc_type,
-                value=exc_obj,
-                tb=exc_tb,
+            errors = traceback.format_exception(exc_type, exc_obj, exc_tb)
+            
+            # Format a professional error report
+            user_id = message.from_user.id if message.from_user else "Unknown User"
+            chat_id = message.chat.id if message.chat else "Private"
+            input_text = message.text or message.caption or "None"
+            
+            error_msg = (
+                "**❌ CRITICAL ERROR DETECTED**\n\n"
+                f"👤 **User:** `{user_id}`\n"
+                f"📍 **Chat:** `{chat_id}`\n"
+                f"⌨️ **Command:** `{input_text}`\n\n"
+                f"📝 **Traceback:**\n```python\n"
+                f"{''.join(errors)}```"
             )
-            error_feedback = split_limits(
-                "**ERROR** | `{}` | `{}`\n\n```{}```\n\n```{}```\n".format(
-                    0 if not message.from_user else message.from_user.id,
-                    0 if not message.chat else message.chat.id,
-                    message.text or message.caption,
-                    "".join(errors),
-                ),
-            )
+            
+            error_feedback = split_limits(error_msg)
+            
             for x in error_feedback:
                 try:
-                    await Client.join_chat("YourGroupLinkHere")
-                    await Client.send_message(SUPPORT_CHAT, x)
-                except Expectations as e:
-                    print(e) 
-            raise err
+                    # Send error directly to your Support/Log chat
+                    await client.send_message(SUPPORT_CHAT, x)
+                except FloodWait as e:
+                    await asyncio.sleep(e.value)
+                except Exception as e:
+                    print(f"Logging Failed: {e}")
+            
+            # Keep this raised so you can see it in your AWS terminal too
+            raise 
 
     return capture
+            

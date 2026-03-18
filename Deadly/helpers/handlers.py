@@ -1,6 +1,5 @@
-
 # Copyright © 2023-2024 by piroxpower@Github
-# Optimized for 2026: Cyber-Aura Metadata & Queue Logic
+# Optimized for 2026: High-Speed Text-Only Queue Logic
 
 import os
 from pytgcalls.types.input_stream import AudioPiped
@@ -8,52 +7,51 @@ from pytgcalls.types.input_stream.quality import HighQualityAudio
 
 from Deadly import Music
 from Deadly.helpers.queues import QUEUE, get_queue, pop_an_item
-from Deadly.helpers.thumbnail import generate_aura_thumb
 
 async def skip_current_song(chat_id):
+    """Handles automatic/manual skipping to the next song in queue."""
     if chat_id in QUEUE:
-        # Remove the song that just finished/was skipped
+        # 1. Remove the song that just finished or was skipped
         pop_an_item(chat_id)
         
-        # Check if there is another song waiting
+        # 2. Check if the queue is now empty
         if len(QUEUE[chat_id]) == 0:
-            await Music.leave_group_call(chat_id)
+            try:
+                await Music.leave_group_call(chat_id)
+            except:
+                pass
             del QUEUE[chat_id]
-            return 1 # Queue Ended
+            return 1 # Signal: Queue Ended
+            
         else:
-            # Get the next song data
-            # QUEUE stores: [title, dur, user, link, type, thumb_url]
+            # 3. Fetch next song data from the queue
+            # Structure: [title, duration, user, link, type, thumb_url]
             next_song = get_queue(chat_id)
             title = next_song[0]
-            link = next_song[3]
             duration = next_song[1]
-            thumb_url = next_song[5]
             requested_by = next_song[2]
+            link = next_song[3]
+            thumb_url = next_song[5]
 
-            # 1. Start the next stream
+            # 4. Trigger the next stream immediately
             await Music.change_stream(
                 chat_id,
                 AudioPiped(link, HighQualityAudio())
             )
-
-            # 2. Generate the new Cyber-Aura card for the next song
-            try:
-                thumb_path = await generate_aura_thumb(title, duration, requested_by, thumb_url)
-            except:
-                thumb_path = thumb_url # Fallback
             
-            # Return data for skip.py to display
-            return [title, link, "Audio", thumb_path]
-    return 0 # Nothing in queue
+            # 5. Return data for play/skip messages (Using raw thumb_url as fallback)
+            return [title, link, "Audio", thumb_url]
+            
+    return 0 # Signal: Nothing in queue
 
 async def skip_item(chat_id, position):
-    """The missing function that was causing your crash."""
+    """Removes a specific item from the queue by its index."""
     if chat_id in QUEUE:
         items = QUEUE[chat_id]
         if len(items) > position:
-            # Remove specific index
+            # Extract song name for the confirmation message
             song_name = items[position][0]
+            # Remove the specific index
             items.pop(position)
             return song_name
     return 0
-            

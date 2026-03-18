@@ -1,18 +1,27 @@
-speedtest-cli
-ffmpeg
-ffprobe
-ffmpeg-python
+# --- CORE ENGINES ---
+pyrogram==2.0.106
 py-tgcalls==1.1.6
 ntgcalls==1.0.4
-pyrogram==2.0.106
+
+# --- SEARCH & AUDIT (100-Check Engine) ---
+youtube-search-python==1.4.6
+yt-dlp
+python-arq
 requests
 aiohttp
 aiofiles
+
+# --- VISUALS (Cyber-Aura Engine) ---
 pillow
-asyncio
-wget
-python-arq
-youtube-search-python==1.4.6
-yt-dlp
-python-dotenv
 gTTS
+wget
+
+# --- SYSTEM & MONITORING ---
+psutil
+speedtest-cli
+python-dotenv
+asyncio
+
+# --- TOOLS ---
+ffmpeg-python
+

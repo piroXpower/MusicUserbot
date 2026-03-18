@@ -1,54 +1,59 @@
-# Copyright © 2023-2024 by piroxpower@Github, < https://github.com/piroxpower >.
-#
-# This file is part of < https://github.com/Team-Deadly/MusicUserbot > project,
-# and is released under the "GNU v3.0 License Agreement".
-# Please see < https://github.com/Team-Deadly/MusicUserbot/blob/main/LICENSE >
-#
-# All rights reserved ®.
 
-from pyrogram.raw.base import Update
+# Copyright © 2023-2024 by piroxpower@Github
+# Optimized for 2026: Cyber-Aura Metadata & Queue Logic
+
+import os
 from pytgcalls.types.input_stream import AudioPiped
 from pytgcalls.types.input_stream.quality import HighQualityAudio
-from pytgcalls.types.stream import StreamAudioEnded, StreamVideoEnded
 
-from ..import PLAYER, Music
-from .queues import QUEUE, clear_queue, get_queue, pop_an_item
-from .youtube import ytdl
-from .thumbnail import generate_aura_thumb # New Import
+from Deadly import Music
+from Deadly.helpers.queues import QUEUE, get_queue, pop_an_item
+from Deadly.helpers.thumbnail import generate_aura_thumb
 
 async def skip_current_song(chat_id):
     if chat_id in QUEUE:
-        chat_queue = get_queue(chat_id)
-        if len(chat_queue) == 1:
-            try: await Music.leave_group_call(chat_id)
-            except: pass
-            clear_queue(chat_id)
-            return 1
+        # Remove the song that just finished/was skipped
+        pop_an_item(chat_id)
+        
+        # Check if there is another song waiting
+        if len(QUEUE[chat_id]) == 0:
+            await Music.leave_group_call(chat_id)
+            del QUEUE[chat_id]
+            return 1 # Queue Ended
         else:
-            pop_an_item(chat_id)
-            new_q = get_queue(chat_id)
-            songname, link_id, ref_link, type, duration, thumb_url, req_by = new_q[0]
+            # Get the next song data
+            # QUEUE stores: [title, dur, user, link, type, thumb_url]
+            next_song = get_queue(chat_id)
+            title = next_song[0]
+            link = next_song[3]
+            duration = next_song[1]
+            thumb_url = next_song[5]
+            requested_by = next_song[2]
 
-            # Refresh Link
-            hm, play_url = await ytdl(link_id) if not str(link_id).startswith("http") else (1, link_id)
+            # 1. Start the next stream
+            await Music.change_stream(
+                chat_id,
+                AudioPiped(link, HighQualityAudio())
+            )
+
+            # 2. Generate the new Cyber-Aura card for the next song
+            try:
+                thumb_path = await generate_aura_thumb(title, duration, requested_by, thumb_url)
+            except:
+                thumb_path = thumb_url # Fallback
             
-            await Music.change_stream(chat_id, AudioPiped(play_url, HighQualityAudio()))
-            
-            # Generate Thumbnail for the skip
-            final_thumb = await generate_aura_thumb(songname, duration, req_by, thumb_url)
-            return [songname, ref_link, type, final_thumb]
+            # Return data for skip.py to display
+            return [title, link, "Audio", thumb_path]
+    return 0 # Nothing in queue
+
+async def skip_item(chat_id, position):
+    """The missing function that was causing your crash."""
+    if chat_id in QUEUE:
+        items = QUEUE[chat_id]
+        if len(items) > position:
+            # Remove specific index
+            song_name = items[position][0]
+            items.pop(position)
+            return song_name
     return 0
-
-@Music.on_stream_end()
-async def on_end_handler(_, update: Update):
-    if isinstance(update, (StreamAudioEnded, StreamVideoEnded)):
-        chat_id = update.chat_id
-        op = await skip_current_song(chat_id)
-        if op in [0, 1]: return
-        
-        await PLAYER.send_photo(
-            chat_id,
-            photo=op[3],
-            caption=f"⏭️ **sᴋɪᴘᴘᴇᴅ! ɴᴏᴡ ᴘʟᴀʏɪɴɢ:**\n└ 🎧 **ᴛɪᴛʟᴇ:** [{op[0]}]({op[1]})"
-        )
-        
+            

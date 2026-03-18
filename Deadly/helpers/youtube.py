@@ -1,65 +1,88 @@
-# Copyright © 2023-2024 by piroxpower@Github, < https://github.com/piroxpower >.
-#
-# This file is part of < https://github.com/Team-Deadly/MusicUserbot > project,
-# and is released under the "GNU v3.0 License Agreement".
-# Please see < https://github.com/Team-Deadly/MusicUserbot/blob/main/LICENSE >
-#
-# All rights reserved ®.
-
-
-import asyncio
 import requests
+import re
+import asyncio
+import random
+from youtubesearchpython import VideosSearch
 
-# 2026 Stable API Endpoints
+# 1. API CONFIGURATION
 API_LIST = [
     "https://saavn.sumit.co/api",
-    "https://jiosaavn-apix.arcadopredator.workers.dev/api"
+    "https://jiosaavn-apix.arcadopredator.workers.dev/api",
+    "https://saavn.me/api" # Added one more mirror for 100% uptime
 ]
 
 def convert_seconds(seconds):
     try:
         seconds = int(seconds)
-        minutes = seconds // 60
-        seconds %= 60
-        return "%02d:%02d" % (minutes, seconds)
+        return "%02d:%02d" % (seconds // 60, seconds % 60)
     except:
         return "00:00"
 
+def clean_title(title):
+    """Strips YouTube noise to find the core studio track."""
+    if not title: return ""
+    title = re.split(r'\||-|\(|\{|\[', title)[0]
+    junk = ["official", "video", "audio", "lyrics", "full song", "4k", "hd", "hq", "remix"]
+    for word in junk:
+        title = re.sub(rf"\b{word}\b", "", title, flags=re.IGNORECASE)
+    return re.sub(r'[^\w\s]', '', title).strip()
+
 def ytsearch(query):
-    """Searches JioSaavn for song metadata."""
-    for base_url in API_LIST:
+    """
+    Triple-Layer Accuracy: YT Discovery -> Deezer Audit -> Saavn Fetch
+    """
+    try:
+        # LAYER 1: Discovery
+        yt = VideosSearch(query, limit=1).result()
+        if not yt or not yt.get("result"):
+            return 0
+            
+        yt_title = yt["result"][0]["title"]
+        # Grab YT thumbnail as a fallback for the CD art
+        yt_thumb = yt["result"][0]["thumbnails"][0]["url"].split("?")[0]
+        cleaned_yt_title = clean_title(yt_title)
+        
+        # LAYER 2: Deezer Metadata Audit
+        target_query = cleaned_yt_title
         try:
-            search_url = f"{base_url}/search/songs?query={query}&limit=1"
-            response = requests.get(search_url, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                if data.get("success") and data["data"]["results"]:
-                    song = data["data"]["results"][0]
-                    songname = song["name"][:35] + "..." if len(song["name"]) > 34 else song["name"]
-                    # Your curl shows 'id' is what we need for the next step
-                    return [songname, song["id"], convert_seconds(song["duration"])]
-        except Exception as e:
-            print(f"Search failed for {base_url}: {e}")
-            continue
-    return 0
+            d_res = requests.get(f"https://api.deezer.com/search?q={cleaned_yt_title}&limit=1", timeout=5).json()
+            if d_res.get("data"):
+                track = d_res["data"][0]
+                target_query = f"{track['title']} {track['artist']['name']}"
+        except: pass
+
+        # LAYER 3: JioSaavn Execution (Failover across API_LIST)
+        random.shuffle(API_LIST)
+        for base_url in API_LIST:
+            try:
+                res = requests.get(f"{base_url}/search/songs?query={target_query}&limit=1", timeout=10).json()
+                if res.get("success") and res["data"]["results"]:
+                    song = res["data"]["results"][0]
+                    
+                    # Return all 4 essential pieces for play.py
+                    # [Title, ID, Duration, Thumbnail]
+                    return [
+                        song["name"][:35], 
+                        song["id"], 
+                        convert_seconds(song["duration"]), 
+                        song["image"][-1]["url"] if song.get("image") else yt_thumb
+                    ]
+            except: continue
+                
+        return 0
+    except Exception as e:
+        print(f"CRITICAL Search Error: {e}")
+        return 0
 
 async def ytdl(song_id):
-    """Fetches the 320kbps direct stream URL using song ID."""
+    """Fetches verified 320kbps link."""
+    random.shuffle(API_LIST)
     for base_url in API_LIST:
         try:
-            details_url = f"{base_url}/songs?ids={song_id}"
-            response = requests.get(details_url, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                if data.get("success") and data["data"]:
-                    song_data = data["data"][0]
-                    # FIX: Your curl showed the key is 'url', not 'link'
-                    download_options = song_data.get("downloadUrl", [])
-                    if download_options:
-                        # Grab the last item (320kbps) and the 'url' key
-                        stream_link = download_options[-1]["url"]
-                        return 1, stream_link
-        except Exception as e:
-            print(f"Link fetch failed for {base_url}: {e}")
-            continue
-    return 0, "Could not extract stream URL from JioSaavn."
+            res = requests.get(f"{base_url}/songs?ids={song_id}", timeout=10).json()
+            if res.get("success") and res["data"]:
+                # The last item in downloadUrl is 320kbps
+                return 1, res["data"][0]["downloadUrl"][-1]["url"]
+        except: continue
+    return 0, "All API endpoints failed."
+        

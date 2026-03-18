@@ -4,7 +4,7 @@
 import asyncio
 import importlib
 from pyrogram import idle
-from Deadly import PLAYER, Music, LOGGER_ID
+from Deadly import PLAYER, Music, LOGGER as LOGGER_ID
 from Deadly.plugins import __init__ as plugins_root
 
 # Utility to load all plugins safely

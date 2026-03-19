@@ -6,7 +6,7 @@ from pyrogram.types import Message
 from pytgcalls.types.input_stream import AudioPiped
 from pytgcalls.types.input_stream.quality import HighQualityAudio
 
-from Deadly import HNDLR, Music
+from Deadly import HNDLR, Music, FFMPEG_OPTIONS
 from Deadly.helpers.queues import add_to_queue, QUEUE
 from Deadly.helpers.youtube import ytsearch, ytdl
 from Deadly.helpers.decorators import authorized_users_only
@@ -44,7 +44,7 @@ async def play(client, m: Message):
             # Voice Chat Stream Engine
             await Music.join_group_call(
                 chat_id, 
-                AudioPiped(direct_link, HighQualityAudio())
+                AudioPiped(direct_link, audio_parameters=FFMPEG_OPTIONS)
             )
             
             add_to_queue(chat_id, title, direct_link, song_id, "Audio", duration, thumb_url, user_name)

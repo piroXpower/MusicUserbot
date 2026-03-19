@@ -1,13 +1,13 @@
 # Copyright © 2026 by piroxpower@Github
-# High-Speed Triple-Audit: YouTube -> Deezer (Primary) -> JioSaavn (Stream)
+# Optimized for 2026: Hybrid Logic (Deezer Metadata + JioSaavn Stream)
 
 import requests
 import re
 import random
 from youtubesearchpython import VideosSearch
 
-# API CONFIGURATION
-API_LIST = [
+# Official JioSaavn API Mirrors (High Stability)
+SAAVN_APIS = [
     "https://saavn.me/api",
     "https://saavn.sumit.co/api",
     "https://jiosaavn-apix.arcadopredator.workers.dev/api"
@@ -17,83 +17,67 @@ def convert_seconds(seconds):
     try:
         seconds = int(seconds)
         return "%02d:%02d" % (seconds // 60, seconds % 60)
-    except:
-        return "00:00"
+    except: return "00:00"
 
 def clean_title(title):
-    """Strips YouTube noise to find core track metadata."""
     if not title: return ""
     title = re.split(r'\||-|\(|\{|\[', title)[0]
-    junk = ["official", "video", "audio", "lyrics", "full song", "4k", "hd", "hq", "remix"]
-    for word in junk:
-        title = re.sub(rf"\b{word}\b", "", title, flags=re.IGNORECASE)
     return re.sub(r'[^\w\s]', '', title).strip()
 
 def ytsearch(query):
     """
-    1. YouTube: Finds the song.
-    2. Deezer: Audits for the official Global Metadata.
-    3. JioSaavn: Fetches the 320kbps Stream Package.
+    1. YouTube: Algorithm to find the right track.
+    2. Deezer: Official Metadata & High-Res Art.
+    3. JioSaavn: Reliable 320kbps Stream Fetching.
     """
     try:
-        # STEP 1: YouTube Discovery
+        # LAYER 1: YouTube Search (The Brain)
         yt = VideosSearch(query, limit=1).result()
-        if not yt or not yt.get("result"):
-            return 0
+        if not yt or not yt.get("result"): return 0
             
-        yt_data = yt["result"][0]
-        yt_title = yt_data["title"]
-        yt_thumb = yt_data["thumbnails"][0]["url"].split("?")[0]
-        cleaned_yt_title = clean_title(yt_title)
+        yt_title = yt["result"][0]["title"]
+        cleaned_query = clean_title(yt_title)
         
-        # STEP 2: Deezer Primary Metadata Audit
-        # We prioritize Deezer's database for the cleanest Title/Artist info
-        target_query = cleaned_yt_title
-        deezer_thumb = None
-        try:
-            d_res = requests.get(f"https://api.deezer.com/search?q={cleaned_yt_title}&limit=1", timeout=4).json()
-            if d_res.get("data"):
-                track = d_res["data"][0]
-                # Reconstruct query using official Artist + Title
-                target_query = f"{track['title']} {track['artist']['name']}"
-                deezer_thumb = track['album']['cover_xl']
-        except: 
-            pass
+        # LAYER 2: Official Deezer API (Metadata & Art)
+        # Even if mirrors are down, the official API (api.deezer.com) is always up.
+        deezer_url = f"https://api.deezer.com/search?q={cleaned_query}&limit=1"
+        d_res = requests.get(deezer_url, timeout=5).json()
 
-        # STEP 3: JioSaavn Stream Fetching
-        random.shuffle(API_LIST)
-        for base_url in API_LIST:
-            try:
-                # Use the Deezer-audited query for perfect matching
-                res = requests.get(f"{base_url}/search/songs?query={target_query}&limit=1", timeout=6).json()
-                if res.get("success") and res["data"]["results"]:
-                    song = res["data"]["results"][0]
-                    
-                    # Return: [Title, ID, Duration, Thumb_URL]
-                    return [
-                        song["name"][:35],               # [0] Official Title
-                        song["id"],                      # [1] JioSaavn ID for ytdl()
-                        convert_seconds(song["duration"]), # [2] Duration
-                        deezer_thumb or song["image"][-1]["url"] or yt_thumb # [3] High-Res Art
-                    ]
-            except: 
-                continue
-                
+        if d_res.get("data") and len(d_res["data"]) > 0:
+            track = d_res["data"][0]
+            display_title = f"{track['title']} - {track['artist']['name']}"
+            thumb = track['album']['cover_xl']
+            
+            # LAYER 3: JioSaavn (The Reliable Audio Pipe)
+            # We use Deezer's clean title to find the matching file on Saavn
+            random.shuffle(SAAVN_APIS)
+            for api in SAAVN_APIS:
+                try:
+                    s_res = requests.get(f"{api}/search/songs?query={display_title}&limit=1", timeout=5).json()
+                    if s_res.get("success") and s_res["data"]["results"]:
+                        song = s_res["data"]["results"][0]
+                        return [
+                            display_title[:35], # Clean Deezer Title
+                            song["id"],         # Saavn ID for streaming
+                            convert_seconds(track['duration']), 
+                            thumb               # Official Deezer High-Res Art
+                        ]
+                except: continue
+        
         return 0
     except Exception as e:
-        print(f"Audit Error: {e}")
+        print(f"Hybrid Engine Error: {e}")
         return 0
 
 async def ytdl(song_id):
-    """Fetches the actual 320kbps .m4a link from the JioSaavn API."""
-    random.shuffle(API_LIST)
-    for base_url in API_LIST:
+    """Fetches verified 320kbps link from JioSaavn."""
+    random.shuffle(SAAVN_APIS)
+    for api in SAAVN_APIS:
         try:
-            res = requests.get(f"{base_url}/songs?ids={song_id}", timeout=6).json()
+            res = requests.get(f"{api}/songs?ids={song_id}", timeout=5).json()
             if res.get("success") and res["data"]:
-                # Grabbing the highest quality index (320kbps)
+                # Returns official 320kbps direct stream
                 return 1, res["data"][0]["downloadUrl"][-1]["url"]
-        except: 
-            continue
-    return 0, "Failed to fetch 320kbps stream from mirrors."
-                
+        except: continue
+    return 0, "sᴛʀᴇᴀᴍ ᴇɴɢɪɴᴇ ᴏғғʟɪɴᴇ."
+

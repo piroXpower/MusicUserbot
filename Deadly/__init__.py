@@ -15,6 +15,23 @@ API_ID = int(os.getenv("API_ID", "21364355"))
 API_HASH = os.getenv("API_HASH", "72f11aec1dd3e5764554d477341a3d0b") 
 PYRO_STRING = os.getenv("STRING_SESSION", "") 
 
+# dont change or you responsible for your bot
+FFMPEG_OPTIONS = {
+    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+    'options': (
+        '-vn '                           # No video
+        '-acodec libopus '               # Native High-Quality Telegram Codec
+        '-b:a 320k '                     # Max Bitrate
+        '-ac 2 '                         # Stereo
+        '-ar 48000 '                     # Native Telegram Sample Rate
+        '-af "volume=1.5,'               # 50% Volume Boost
+            'bass=g=3:f=60:w=0.5,'       # Warm Sub-Bass Punch
+            'compand=0.3|0.3:1|1:-90/-60|-60/-40|-40/-30/-20/-20:6:0:-90:0.2,' # Pro Compression
+            'loudnorm=I=-16:TP=-1.5:LRA=11"' # Intelligent Loudness Normalization
+    ),
+}
+
+
 # Support for Multi-Account if needed later
 OWNER_ID = int(os.getenv("OWNER_ID", "8407294026")) 
 LOGGER = int(os.getenv("LOGGER", "8407294026")) 

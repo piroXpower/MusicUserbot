@@ -5,7 +5,7 @@ import speedtest
 import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from Deadly import HNDLR, OWNER_ID
+from Deadly import *
 
 def run_speedtest():
     """Executes the blocking speedtest logic."""
@@ -15,7 +15,7 @@ def run_speedtest():
     test.upload()
     return test.results.dict()
 
-@Client.on_message(filters.command(["speedcheck", "speed"], prefixes=f"{HNDLR}"))
+@Client.on_message(filters.command(["speedtest", "speed"], prefixes=f"{HNDLR}"))
 async def speedtest_function(client, message: Message):
     # SECURITY: Restrict to Owner to prevent CPU spikes during music playback
     if message.from_user.id != OWNER_ID:
